@@ -1,3 +1,5 @@
+import javafx.scene.layout.Border;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -8,16 +10,20 @@ public class MiniAlarm extends JFrame implements ActionListener{
     JButton hoursBtn;
     JButton minutesBtn;
     JButton secondsBtn;
+    JButton setAlarm;
     JLabel timeTextArea= new JLabel();
     JPanel header;
     JPanel body;
-    Timer timer=new Timer();
+    Timer timer = new Timer();
+    Container container;
+    private Clock clock;
+
     public MiniAlarm(){
         super("Mini alarm");
-        setSize(500,300);
-        setLocation(100,100);
+        setSize(500,500);
+        setLocation(500,500);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        Container container = getContentPane();
+        container=getContentPane();
         setLayout(new BoxLayout(container,BoxLayout.PAGE_AXIS));
 
 
@@ -30,6 +36,7 @@ public class MiniAlarm extends JFrame implements ActionListener{
         timeTextArea.setMaximumSize(new Dimension(200,50));
 
         timeTextArea.setFont(new Font("Arial Black",1,22));
+
         timeTextArea.setText(timer.toString());
 
 
@@ -37,9 +44,12 @@ public class MiniAlarm extends JFrame implements ActionListener{
         header.add(timeTextArea);
 
 
+
         body = new JPanel();
-        body.setSize(400,100);
+        body.setMaximumSize(new Dimension(400,100));
         body.setLayout(new FlowLayout());
+        //body.setBorder(BorderFactory.createLineBorder(Color.BLUE));
+
 
         hoursBtn = new JButton("Hour");
         hoursBtn.addActionListener(this);
@@ -53,13 +63,24 @@ public class MiniAlarm extends JFrame implements ActionListener{
         secondsBtn.addActionListener(this);
         body.add(secondsBtn);
 
+        setAlarm = new JButton("SET");
+        setAlarm.addActionListener(this);
+        header.add(setAlarm);
+
+        clock = new Clock();
+        body.add(clock,new BorderLayout());
+
+
+
+
         add(header);
         add(body);
+
+        clock = new Clock();
+        clock.setBackground(Color.orange);
+        add(clock,new BorderLayout());
+
         setVisible(true);
-
-
-
-
 
 
 
@@ -90,7 +111,8 @@ public class MiniAlarm extends JFrame implements ActionListener{
     @Override
     public void actionPerformed(ActionEvent e) {
 
-        //timer=new Timer();
+
+
         if(e.getSource()==hoursBtn){
             timer.setHours(timer.getHours()+1);
             timeTextArea.setText(timer.toString());
@@ -107,4 +129,5 @@ public class MiniAlarm extends JFrame implements ActionListener{
             timer.tick();
 
     }
+
 }
