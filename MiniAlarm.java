@@ -4,6 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Calendar;
 
 public class MiniAlarm extends JFrame implements ActionListener{
 
@@ -67,8 +68,7 @@ public class MiniAlarm extends JFrame implements ActionListener{
         setAlarm.addActionListener(this);
         header.add(setAlarm);
 
-        clock = new Clock();
-        body.add(clock,new BorderLayout());
+
 
 
 
@@ -89,21 +89,6 @@ public class MiniAlarm extends JFrame implements ActionListener{
 
         MiniAlarm alarm = new MiniAlarm();
 
-        /*Timer timer= new Timer();
-
-        JOptionPane.showMessageDialog(null,timer);
-        int hours=Integer.parseInt(JOptionPane.showInputDialog("hours"));
-        int minutes=Integer.parseInt(JOptionPane.showInputDialog("minutes"));
-        int seconds=Integer.parseInt(JOptionPane.showInputDialog("seconds"));
-
-        Timer timer2 = new Timer();
-        timer2.setHours(hours);
-
-        JOptionPane.showMessageDialog(null,timer2);
-
-        timer2.setHoursBtn();
-
-        JOptionPane.showMessageDialog(null,timer2);*/
     }
 
 
@@ -127,6 +112,16 @@ public class MiniAlarm extends JFrame implements ActionListener{
             timer.setSeconds(timer.getSeconds()+1);
             timeTextArea.setText(timer.toString());
             timer.tick();
+
+        if(e.getSource()==setAlarm) {
+            Calendar alarm=Calendar.getInstance();
+            alarm.set(Calendar.HOUR_OF_DAY,timer.getHours());
+            alarm.set(Calendar.MINUTE,timer.getMinutes());
+            alarm.set(Calendar.SECOND,timer.getSeconds());
+        }
+
+    }
+    public void setAlarm(){
 
     }
 
