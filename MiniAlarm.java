@@ -1,10 +1,8 @@
-import javafx.scene.layout.Border;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Calendar;
+
 
 public class MiniAlarm extends JFrame implements ActionListener{
 
@@ -15,9 +13,10 @@ public class MiniAlarm extends JFrame implements ActionListener{
     JLabel timeTextArea= new JLabel();
     JPanel header;
     JPanel body;
-    Timer timer = new Timer();
+    Alarm alarm = new Alarm();
     Container container;
     private Clock clock;
+    private Scheduler task;
 
     public MiniAlarm(){
         super("Mini alarm");
@@ -38,7 +37,7 @@ public class MiniAlarm extends JFrame implements ActionListener{
 
         timeTextArea.setFont(new Font("Arial Black",1,22));
 
-        timeTextArea.setText(timer.toString());
+        timeTextArea.setText(alarm.toString());
 
 
 
@@ -87,7 +86,7 @@ public class MiniAlarm extends JFrame implements ActionListener{
     }
     public static void main(String[] args) {
 
-        MiniAlarm alarm = new MiniAlarm();
+        MiniAlarm miniAlarmApp = new MiniAlarm();
 
     }
 
@@ -99,30 +98,33 @@ public class MiniAlarm extends JFrame implements ActionListener{
 
 
         if(e.getSource()==hoursBtn){
-            timer.setHours(timer.getHours()+1);
-            timeTextArea.setText(timer.toString());
-            timer.tick();
+            alarm.setHours(alarm.getHours()+1);
+            timeTextArea.setText(alarm.toString());
+            alarm.tick();
         }
         else if(e.getSource()==minutesBtn){
-            timer.setMinutes(timer.getMinutes()+1);
-            timeTextArea.setText(timer.toString());
-            timer.tick();
+            alarm.setMinutes(alarm.getMinutes()+1);
+            timeTextArea.setText(alarm.toString());
+            alarm.tick();
         }
         else if(e.getSource()==secondsBtn)
-            timer.setSeconds(timer.getSeconds()+1);
-            timeTextArea.setText(timer.toString());
-            timer.tick();
+            alarm.setSeconds(alarm.getSeconds()+1);
+            timeTextArea.setText(alarm.toString());
+            alarm.tick();
 
         if(e.getSource()==setAlarm) {
-            Calendar alarm=Calendar.getInstance();
-            alarm.set(Calendar.HOUR_OF_DAY,timer.getHours());
-            alarm.set(Calendar.MINUTE,timer.getMinutes());
-            alarm.set(Calendar.SECOND,timer.getSeconds());
+            task = new Scheduler();
+
         }
 
     }
-    public void setAlarm(){
+    public void setAlarmButton(){
+
+
+
+
 
     }
+
 
 }

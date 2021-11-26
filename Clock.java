@@ -3,6 +3,7 @@ import com.sun.scenario.animation.shared.ClipEnvelope;
 import javax.swing.*;
 import java.awt.*;
 import java.util.Calendar;
+import java.lang.Thread;
 
 public class Clock  extends JPanel {
 
@@ -46,18 +47,18 @@ public class Clock  extends JPanel {
         //hours hand
         hours=hours%12;
         angle=Math.PI/180*(90-(hours+minutes/60.0)*30);
-        x=(int)(245+100*Math.cos(angle));
-        y=(int)(193-100*Math.sin(angle));
-        g.drawLine(245,193,x,y);
+        x=(int)(246+100*Math.cos(angle));
+        y=(int)(195-100*Math.sin(angle));
+        g.drawLine(246,195,x,y);
         //minutes hand
         angle=Math.PI/180*(90-minutes*6);
         x=(int)(246+130*Math.sin(angle));
-        y=(int)(192+130*Math.cos(angle));
-        g.drawLine(246,192,x,y);
+        y=(int)(195+130*Math.cos(angle));
+        g.drawLine(246,195,x,y);
 
         //sec
         g.setColor(Color.red);
-        angle=Math.PI/180*(90-seconds*0.1);
+        angle=seconds*Math.PI/30;
         x=(int)(246+145*Math.sin(angle));
         y=(int)(195+145*Math.cos(angle));
         g.drawLine(246,195,x,y);
@@ -65,6 +66,7 @@ public class Clock  extends JPanel {
 
 
     }
+
 
 
 }

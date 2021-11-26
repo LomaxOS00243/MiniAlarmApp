@@ -1,16 +1,16 @@
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class Timer{
+public class Alarm{
     private int hours;
     private int minutes;
     private int seconds;
 
 
-    public Timer() {
+    public Alarm() {
         hours=12;
-        minutes=00;
-        seconds=00;
+        minutes=0;
+        seconds=0;
         //tick();
     }
 
@@ -40,11 +40,11 @@ public class Timer{
     public void tick(){
         if(getSeconds()==60){
             minutes++;
-            seconds=00;
+            seconds=0;
         }
         else if(getMinutes()==60){
-                hours++;
-                minutes=00;
+            hours++;
+            minutes=0;
 
         }
     }
@@ -64,14 +64,15 @@ public class Timer{
         if(getMinutes()!=0)
             str+=minutes+":";
         else
-            str+=00+":";
+            str+=0+":";
 
         if(getSeconds()!=0)
             str+=seconds;
         else
-            str+=00;
+            str+=0;
 
         return str;
 
     }
 }
+
