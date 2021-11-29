@@ -1,10 +1,14 @@
-import java.text.SimpleDateFormat;
+import java.text.ParseException;
 import java.util.Date;
+
+import java.text.SimpleDateFormat;
+
 
 public class Alarm{
     private int hours;
     private int minutes;
     private int seconds;
+
 
 
     public Alarm() {
@@ -19,7 +23,13 @@ public class Alarm{
     }
 
     public void setHours(int hours) {
-        this.hours = hours;
+        ;
+        if(hours>0 && hours<24){
+            this.hours = hours;
+        }
+        else
+            this.hours=0;
+
     }
 
     public int getMinutes() {
@@ -49,29 +59,12 @@ public class Alarm{
         }
     }
 
-
-
     @Override
     public String toString() {
 
-        String str=" ";
 
-        if(getHours()!=0)
-            str+=hours+":";
-        else
-            str+=12+":";
+        return String.format("%02d",getHours())+":"+String.format("%02d",getMinutes())+":"+String.format("%02d",getSeconds());
 
-        if(getMinutes()!=0)
-            str+=minutes+":";
-        else
-            str+=0+":";
-
-        if(getSeconds()!=0)
-            str+=seconds;
-        else
-            str+=0;
-
-        return str;
 
     }
 }

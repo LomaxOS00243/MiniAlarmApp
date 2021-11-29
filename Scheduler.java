@@ -1,38 +1,53 @@
-import javax.swing.*;
+
+import javax.sound.sampled.*;
+import java.io.File;
+import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class Scheduler  {
+import static javax.sound.sampled.AudioSystem.getAudioInputStream;
 
-    private Timer timer;
-    private Alarm alarm;
-    private Clock clock;
+public class Scheduler {
+    Alarm alarm;
+    Timer timer;
     public Scheduler(){
-         timer = new Timer();
-         timer.schedule(new setScheduler(), 50*1000);
+        timer= new Timer();
+        timer.schedule(new reminder(),getAlarm());
     }
 
-    class setScheduler extends TimerTask{
+
+    class reminder extends TimerTask{
         public void run() {
+            File file = new File("audio/loveAlarm.wav");
+            Clip clip;
+            try {
+                AudioInputStream audio = getAudioInputStream(file);
+                clip = AudioSystem.getClip();
+                clip.open(audio);
+                clip.start();
+            } catch (UnsupportedAudioFileException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (LineUnavailableException e) {
+                e.printStackTrace();
+            }
 
-            clock = new Clock();
-            JOptionPane.showMessageDialog(null, "Alarm!!");
         }
+
     }
 
-    public Date setTask(){
+    public Date getAlarm() {
         alarm = new Alarm();
-        Calendar calendar =Calendar.getInstance();
+        Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.HOUR_OF_DAY,alarm.getHours());
         calendar.set(Calendar.MINUTE,alarm.getMinutes());
         calendar.set(Calendar.SECOND,alarm.getSeconds());
+        Date date = calendar.getTime();
 
-        Date time = calendar.getTime();
-
-        return time;
-
+        return date;
     }
 
 }

@@ -2,6 +2,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Timer;
 
 
 public class MiniAlarm extends JFrame implements ActionListener{
@@ -16,7 +17,8 @@ public class MiniAlarm extends JFrame implements ActionListener{
     Alarm alarm = new Alarm();
     Container container;
     private Clock clock;
-    private Scheduler task;
+
+
 
     public MiniAlarm(){
         super("Mini alarm");
@@ -69,28 +71,28 @@ public class MiniAlarm extends JFrame implements ActionListener{
 
 
 
-
-
-
         add(header);
         add(body);
 
+
         clock = new Clock();
-        clock.setBackground(Color.orange);
         add(clock,new BorderLayout());
 
         setVisible(true);
 
 
 
+
+
+
+
     }
     public static void main(String[] args) {
 
-        MiniAlarm miniAlarmApp = new MiniAlarm();
+        MiniAlarm alarmApp = new MiniAlarm();
+        Scheduler task = new Scheduler();
 
     }
-
-
 
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -113,18 +115,12 @@ public class MiniAlarm extends JFrame implements ActionListener{
             alarm.tick();
 
         if(e.getSource()==setAlarm) {
-            task = new Scheduler();
+            new Scheduler();
 
         }
 
     }
-    public void setAlarmButton(){
 
-
-
-
-
-    }
 
 
 }
