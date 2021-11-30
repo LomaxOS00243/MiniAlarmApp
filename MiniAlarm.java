@@ -1,8 +1,16 @@
+import javax.sound.sampled.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Timer;
+import java.util.TimerTask;
+
+import static javax.sound.sampled.AudioSystem.getAudioInputStream;
 
 
 public class MiniAlarm extends JFrame implements ActionListener{
@@ -10,13 +18,16 @@ public class MiniAlarm extends JFrame implements ActionListener{
     JButton hoursBtn;
     JButton minutesBtn;
     JButton secondsBtn;
-    JButton setAlarm;
+    JButton setAlarmBtn;
     JLabel timeTextArea= new JLabel();
     JPanel header;
     JPanel body;
     Alarm alarm = new Alarm();
     Container container;
+    boolean start = false;
     private Clock clock;
+    Timer timer = new Timer();
+    Clip clip;
 
 
 
@@ -25,6 +36,7 @@ public class MiniAlarm extends JFrame implements ActionListener{
         setSize(500,500);
         setLocation(500,500);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setResizable(false);
         container=getContentPane();
         setLayout(new BoxLayout(container,BoxLayout.PAGE_AXIS));
 
@@ -38,6 +50,7 @@ public class MiniAlarm extends JFrame implements ActionListener{
         timeTextArea.setMaximumSize(new Dimension(200,50));
 
         timeTextArea.setFont(new Font("Arial Black",1,22));
+
 
         timeTextArea.setText(alarm.toString());
 
@@ -65,10 +78,9 @@ public class MiniAlarm extends JFrame implements ActionListener{
         secondsBtn.addActionListener(this);
         body.add(secondsBtn);
 
-        setAlarm = new JButton("SET");
-        setAlarm.addActionListener(this);
-        header.add(setAlarm);
-
+        setAlarmBtn = new JButton("SET");
+        setAlarmBtn.addActionListener(this);
+        header.add(setAlarmBtn);
 
 
         add(header);
@@ -82,42 +94,95 @@ public class MiniAlarm extends JFrame implements ActionListener{
 
 
 
-
-
-
-
     }
     public static void main(String[] args) {
 
         MiniAlarm alarmApp = new MiniAlarm();
-        Scheduler task = new Scheduler();
 
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
 
-
-
         if(e.getSource()==hoursBtn){
-            alarm.setHours(alarm.getHours()+1);
-            timeTextArea.setText(alarm.toString());
-            alarm.tick();
+            setHoursBtn();
         }
         else if(e.getSource()==minutesBtn){
-            alarm.setMinutes(alarm.getMinutes()+1);
-            timeTextArea.setText(alarm.toString());
-            alarm.tick();
+            setMinutesBtn();
         }
-        else if(e.getSource()==secondsBtn)
-            alarm.setSeconds(alarm.getSeconds()+1);
-            timeTextArea.setText(alarm.toString());
-            alarm.tick();
+        else if(e.getSource()==secondsBtn) {
+            setSecondsBtn();
+        }
+        if (e.getSource()==setAlarmBtn) {
+            if (start == false) {
+                start=true;
+                setAlarmBtn.setText("CANCEL");
+                setAlarm();
 
-        if(e.getSource()==setAlarm) {
-            new Scheduler();
+            } else {
+                start=false;
+                setAlarmBtn.setText("SET");
+                stopAlarm();
+            }
 
         }
+
+
+
+    }
+    public void setHoursBtn(){
+        alarm.setHours(alarm.getHours()+1);
+        timeTextArea.setText(alarm.toString());
+        alarm.tick();
+    }
+    public void setMinutesBtn(){
+        alarm.setMinutes(alarm.getMinutes()+1);
+        timeTextArea.setText(alarm.toString());
+        alarm.tick();
+    }
+
+    public void setSecondsBtn() {
+        alarm.setSeconds(alarm.getSeconds() + 1);
+        timeTextArea.setText(alarm.toString());
+        alarm.tick();
+    }
+
+    public void setAlarm(){
+
+        //timer = new Timer();
+        try {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.HOUR_OF_DAY,alarm.getHours());
+        calendar.set(Calendar.MINUTE,alarm.getMinutes());
+        calendar.set(Calendar.SECOND,alarm.getSeconds());
+        Date date = calendar.getTime();
+
+
+            timer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    File file = new File("audio/loveAlarm.wav");
+
+
+                    try {
+                        AudioInputStream audio = getAudioInputStream(file);
+                        clip = AudioSystem.getClip();
+                        clip.open(audio);
+                        clip.start();
+                    } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+            }, date);
+        }
+        catch (IllegalStateException illegalStateException){
+            JOptionPane.showMessageDialog(null, "The task is already scheduled", "Error setting alarm",JOptionPane.ERROR_MESSAGE);
+        }
+    }
+    public void stopAlarm(){
+            timer.purge();
+            clip.stop();
 
     }
 

@@ -1,7 +1,3 @@
-import java.text.ParseException;
-import java.util.Date;
-
-import java.text.SimpleDateFormat;
 
 
 public class Alarm{
@@ -9,13 +5,11 @@ public class Alarm{
     private int minutes;
     private int seconds;
 
-
-
     public Alarm() {
         hours=12;
         minutes=0;
         seconds=0;
-        //tick();
+
     }
 
     public int getHours() {
@@ -23,7 +17,7 @@ public class Alarm{
     }
 
     public void setHours(int hours) {
-        ;
+
         if(hours>0 && hours<24){
             this.hours = hours;
         }
