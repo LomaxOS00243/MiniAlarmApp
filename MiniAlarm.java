@@ -3,12 +3,10 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.IOException;
-import java.util.Calendar;
-import java.util.Date;
+import java.io.*;
+import java.util.*;
+import java.util.List;
 import java.util.Timer;
-import java.util.TimerTask;
 
 import static javax.sound.sampled.AudioSystem.getAudioInputStream;
 
@@ -22,12 +20,13 @@ public class MiniAlarm extends JFrame implements ActionListener{
     JLabel timeTextArea= new JLabel();
     JPanel header;
     JPanel body;
-    Alarm alarm = new Alarm();
+    Alarm alarm = new Alarm();;
     Container container;
     boolean start = false;
-    private Clock clock;
+    Clock clock;
     Timer timer = new Timer();
     Clip clip;
+    List<Alarm> alarmList = new ArrayList<>();
 
 
 
@@ -104,6 +103,7 @@ public class MiniAlarm extends JFrame implements ActionListener{
     @Override
     public void actionPerformed(ActionEvent e) {
 
+
         if(e.getSource()==hoursBtn){
             setHoursBtn();
         }
@@ -114,10 +114,11 @@ public class MiniAlarm extends JFrame implements ActionListener{
             setSecondsBtn();
         }
         if (e.getSource()==setAlarmBtn) {
-            if (start == false) {
+            if (!start) {
                 start=true;
                 setAlarmBtn.setText("CANCEL");
                 setAlarm();
+                addAlarm(alarm);
 
             } else {
                 start=false;
@@ -127,27 +128,29 @@ public class MiniAlarm extends JFrame implements ActionListener{
 
         }
 
-
-
     }
     public void setHoursBtn(){
+        alarm = new Alarm();
         alarm.setHours(alarm.getHours()+1);
         timeTextArea.setText(alarm.toString());
         alarm.tick();
     }
     public void setMinutesBtn(){
+
         alarm.setMinutes(alarm.getMinutes()+1);
         timeTextArea.setText(alarm.toString());
         alarm.tick();
     }
 
     public void setSecondsBtn() {
+
         alarm.setSeconds(alarm.getSeconds() + 1);
         timeTextArea.setText(alarm.toString());
         alarm.tick();
     }
 
     public void setAlarm(){
+
 
         //timer = new Timer();
         try {
@@ -181,9 +184,48 @@ public class MiniAlarm extends JFrame implements ActionListener{
         }
     }
     public void stopAlarm(){
+        try{
             timer.purge();
             clip.stop();
 
+        }catch (NullPointerException e){
+            e.printStackTrace();
+        }
+
+
+    }
+    public void addAlarm(Alarm alarm){
+
+        int index=0;
+       // for(int i= 0; i<10; i++){
+        while(index<10) {
+            alarmList.add(alarm);
+
+            index++;
+        }
+        if(index!=0){
+            int choice = JOptionPane.showConfirmDialog(null,"You reached the maximum, would like to save?","Max ",JOptionPane.YES_NO_OPTION);
+
+            if(choice==JOptionPane.YES_OPTION){
+                try {
+                    save(alarmList);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            else{
+                System.exit(0);
+            }
+        }
+
+    }
+    public void save(List<Alarm> anAlarm) throws IOException{
+
+        File file = new File("alarms.dat");
+        FileOutputStream fileIn = new FileOutputStream(file);
+        ObjectOutputStream objectIn = new ObjectOutputStream(fileIn);
+
+        objectIn.writeObject(anAlarm);
     }
 
 
