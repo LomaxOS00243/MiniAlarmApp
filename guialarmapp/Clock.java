@@ -1,20 +1,23 @@
+package guialarmapp;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionListener;
 import java.util.Calendar;
 
-import static java.lang.Thread.sleep;
 
 
-public class Clock  extends JPanel{
+public class Clock  extends JPanel /*implements MouseMotionListener */{
+
+    int x;
+    int y;
+    double angle;
 
 
     public void paintComponent(Graphics g){
         super.paintComponent(g);
-
-        double angle;
-        int x;
-        int y;
+        //addMouseMotionListener(this);
 
         //Author: stackoverflow
         //title: Java2D Increase the line width
@@ -62,6 +65,7 @@ public class Clock  extends JPanel{
             g.drawLine(246, 195, x, y);
 
             //sec
+
             g.setColor(Color.red);
             angle = Math.PI / 180 * (90 - seconds * 6.0);
             x = (int) (246 + 145 * Math.sin(angle));
@@ -83,6 +87,25 @@ public class Clock  extends JPanel{
             }
         }.start();
 
+
+
     }
 
+
+   /* @Override
+    public void mouseDragged(MouseEvent e) {
+
+        x=e.getX();
+        y=e.getY();
+        repaint();
+    }
+
+    @Override
+    public void mouseMoved(MouseEvent e) {
+
+        x=e.getX();
+        y=e.getY();
+        repaint();
+
+    }*/
 }

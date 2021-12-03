@@ -1,3 +1,5 @@
+package guialarmapp;
+
 import javax.sound.sampled.*;
 import javax.swing.*;
 import java.awt.*;
@@ -5,7 +7,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
 import java.util.*;
-import java.util.List;
 import java.util.Timer;
 
 import static javax.sound.sampled.AudioSystem.getAudioInputStream;
@@ -17,27 +18,34 @@ public class MiniAlarm extends JFrame implements ActionListener{
     JButton minutesBtn;
     JButton secondsBtn;
     JButton setAlarmBtn;
+    JButton closeWindow;
     JLabel timeTextArea= new JLabel();
     JPanel header;
     JPanel body;
+    JPanel menuBar;
     Alarm alarm = new Alarm();;
     Container container;
     boolean start = false;
     Clock clock;
     Timer timer = new Timer();
     Clip clip;
-    List<Alarm> alarmList = new ArrayList<>();
+    ArrayList<Alarm> alarmList = new ArrayList<>();
 
 
 
     public MiniAlarm(){
         super("Mini alarm");
-        setSize(500,500);
+        setSize(500,550);
         setLocation(500,500);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
         container=getContentPane();
         setLayout(new BoxLayout(container,BoxLayout.PAGE_AXIS));
+
+
+        menuBar = new JPanel();
+        menuBar.setLayout(new BoxLayout(menuBar,BoxLayout.LINE_AXIS));
+        menuBar.setMaximumSize(new Dimension(500,100));
 
 
         header = new JPanel();
@@ -81,16 +89,20 @@ public class MiniAlarm extends JFrame implements ActionListener{
         setAlarmBtn.addActionListener(this);
         header.add(setAlarmBtn);
 
+        closeWindow = new JButton("X");
+        closeWindow.addActionListener(this);
+        //close.setBounds(100,10,80,30);
+        menuBar.add(closeWindow);
 
+        add(menuBar);
         add(header);
         add(body);
 
 
         clock = new Clock();
-        add(clock,new BorderLayout());
+        add(clock,BorderLayout.EAST);
 
         setVisible(true);
-
 
 
     }
@@ -105,44 +117,52 @@ public class MiniAlarm extends JFrame implements ActionListener{
 
 
         if(e.getSource()==hoursBtn){
-            setHoursBtn();
+            setHoursButton();
         }
         else if(e.getSource()==minutesBtn){
-            setMinutesBtn();
+            setMinutesButton();
         }
         else if(e.getSource()==secondsBtn) {
-            setSecondsBtn();
+            setSecondsButton();
         }
         if (e.getSource()==setAlarmBtn) {
             if (!start) {
                 start=true;
                 setAlarmBtn.setText("CANCEL");
                 setAlarm();
-                addAlarm(alarm);
+                checkAlarmList(alarmList);
+
 
             } else {
                 start=false;
                 setAlarmBtn.setText("SET");
                 stopAlarm();
+
             }
 
         }
+        else if(e.getSource()==closeWindow){
+            try {
+                save();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
 
     }
-    public void setHoursBtn(){
-        alarm = new Alarm();
+    public void setHoursButton(){
         alarm.setHours(alarm.getHours()+1);
         timeTextArea.setText(alarm.toString());
         alarm.tick();
     }
-    public void setMinutesBtn(){
+    public void setMinutesButton(){
 
         alarm.setMinutes(alarm.getMinutes()+1);
         timeTextArea.setText(alarm.toString());
         alarm.tick();
     }
 
-    public void setSecondsBtn() {
+    public void setSecondsButton() {
 
         alarm.setSeconds(alarm.getSeconds() + 1);
         timeTextArea.setText(alarm.toString());
@@ -165,8 +185,6 @@ public class MiniAlarm extends JFrame implements ActionListener{
                 @Override
                 public void run() {
                     File file = new File("audio/loveAlarm.wav");
-
-
                     try {
                         AudioInputStream audio = getAudioInputStream(file);
                         clip = AudioSystem.getClip();
@@ -178,54 +196,96 @@ public class MiniAlarm extends JFrame implements ActionListener{
 
                 }
             }, date);
+
+
         }
         catch (IllegalStateException illegalStateException){
             JOptionPane.showMessageDialog(null, "The task is already scheduled", "Error setting alarm",JOptionPane.ERROR_MESSAGE);
         }
     }
     public void stopAlarm(){
-        try{
             timer.purge();
             clip.stop();
 
-        }catch (NullPointerException e){
-            e.printStackTrace();
-        }
+    }
+    public void addAlarm(){
 
+        alarmList.add(alarm);
 
     }
-    public void addAlarm(Alarm alarm){
-
-        int index=0;
-       // for(int i= 0; i<10; i++){
-        while(index<10) {
-            alarmList.add(alarm);
-
-            index++;
-        }
-        if(index!=0){
-            int choice = JOptionPane.showConfirmDialog(null,"You reached the maximum, would like to save?","Max ",JOptionPane.YES_NO_OPTION);
-
-            if(choice==JOptionPane.YES_OPTION){
-                try {
-                    save(alarmList);
-                } catch (IOException e) {
-                    e.printStackTrace();
+    public void checkAlarmList(ArrayList<Alarm> alarmChecker){
+        ArrayList<Alarm>cleaner= new ArrayList<>();
+        for(Alarm al:alarmChecker){
+            if(al.toString().equals(alarm.toString())){
+                cleaner.add(al);
+                int choice = JOptionPane.showConfirmDialog(null,"This alarm was set already, Would you like to delete it?","Error Message",JOptionPane.YES_NO_OPTION);
+                if(choice==JOptionPane.YES_OPTION){
+                    cleaner.clear();
+                }
+                else
+                {
+                    JOptionPane.showMessageDialog(null,"You can't duplicate an alarm, Sorry!","Warrant",JOptionPane.WARNING_MESSAGE);
                 }
             }
-            else{
+            else
+            {
+               JOptionPane.showMessageDialog(null,"Your Alarm was set","Success",JOptionPane.INFORMATION_MESSAGE);
+                addAlarm();
+            }
+        }
+    }
+
+    public void save() throws IOException {
+
+        try {
+            File outFile = new File("files/alarms.dat");
+            FileOutputStream outFileStream = new FileOutputStream(outFile);
+            ObjectOutputStream outObject = new ObjectOutputStream(outFileStream);
+
+            int choice = JOptionPane.showConfirmDialog(null, "Would like to save alarms?", "Save ", JOptionPane.YES_NO_OPTION);
+
+            if (choice == JOptionPane.YES_OPTION) {
+                outObject.writeObject(alarmList);
+                System.exit(0);
+            } else {
                 System.exit(0);
             }
+
+        } catch (FileNotFoundException fne) {
+            JOptionPane.showMessageDialog(null, "Error while saving, no file found", "Error", JOptionPane.ERROR_MESSAGE);
+            fne.printStackTrace();
+        } catch (IOException ie) {
+            JOptionPane.showMessageDialog(null, "Error while writing the file", "Error", JOptionPane.ERROR_MESSAGE);
+            ie.printStackTrace();
         }
 
     }
-    public void save(List<Alarm> anAlarm) throws IOException{
+        public void open(){
 
-        File file = new File("alarms.dat");
-        FileOutputStream fileIn = new FileOutputStream(file);
-        ObjectOutputStream objectIn = new ObjectOutputStream(fileIn);
+        try{
+            File inFile = new File("files/alarms.dat");
 
-        objectIn.writeObject(anAlarm);
+            if(inFile.exists()){
+                FileInputStream inFileStream = new FileInputStream(inFile);
+                ObjectInputStream inObject= new ObjectInputStream(inFileStream);
+
+                alarmList = (ArrayList<Alarm>) inObject.readObject();
+                inObject.close();
+
+            } else{
+                System.exit(0);
+            }
+        } catch(FileNotFoundException fne) {
+            JOptionPane.showMessageDialog(null, "not file found","Error",JOptionPane.ERROR_MESSAGE);
+            fne.printStackTrace();
+        } catch (IOException ie){
+            JOptionPane.showMessageDialog(null, "Error while reading the file","Error",JOptionPane.ERROR_MESSAGE);
+            ie.printStackTrace();
+        } catch (ClassNotFoundException cfe){
+            JOptionPane.showMessageDialog(null, "Error while matching the class of the object","Error",JOptionPane.ERROR_MESSAGE);
+            cfe.printStackTrace();
+        }
+
     }
 
 
