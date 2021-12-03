@@ -1,14 +1,14 @@
 package guialarmapp;
 
+/**The Clock class contains the code that draw the graphic clock on the UI*/
+
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionListener;
 import java.util.Calendar;
 
 
 
-public class Clock  extends JPanel /*implements MouseMotionListener */{
+public class Clock  extends JPanel {
 
     int x;
     int y;
@@ -20,7 +20,16 @@ public class Clock  extends JPanel /*implements MouseMotionListener */{
         //addMouseMotionListener(this);
 
         //Author: stackoverflow
-        //title: Java2D Increase the line width
+        //title:
+        /*******************************************************************
+         *Title: Java2D Increase the line width
+         *Author: Universal Electricity
+         *Site owner/sponsor: stackoverflow.com
+         *Date: Oct 22 2015
+         *Code Version: ---
+         *Availability: https://stackoverflow.com/questions/2839508/java2d-increase-the-line-width
+         *Modified: ---
+         *******************************************************************/
         Graphics2D g2 = (Graphics2D) g;
         g2.setStroke(new BasicStroke(3));
 
@@ -29,8 +38,9 @@ public class Clock  extends JPanel /*implements MouseMotionListener */{
         g.drawOval(90,40,310,310);
         g.fillOval(240,190,12,12);
 
+
         /*The for loop below allows to draw the analog clock divided into 12 sectors based on numbers
-        from 1 to 12 and one sector represent 30.
+         from 1 to 12 and one sector represent 30 degrees in the clock.
          */
 
         for(int i=1;i<=12;i++){
@@ -40,37 +50,47 @@ public class Clock  extends JPanel /*implements MouseMotionListener */{
             g.drawString(Integer.toString(i),x,y);
 
         }
+
+
         Calendar time = Calendar.getInstance();
         int hours = time.get(Calendar.HOUR_OF_DAY);
         int minutes = time.get(Calendar.MINUTE);
         int seconds = time.get(Calendar.SECOND);
 
-        /*The clock face has only 12 hours, so for any 24-hour time, I will have to reduce an hour to 12-hour format.
-        The reduction will not have any impact on the angle value.
-        The best way to achieve the modification is to use the modulo operation, which will also work with the 12-hour format.
-        That will give us hour values from 0 (for 12 AM or 12 PM) to 11.
-         */
+        /*******************************************************************
+         *Title: An Introduction to Object-Oriented Programming
+         *Author: C. Thomas Wu
+         *Site owner/sponsor: Book chapter 5 page 256
+         *Date:----
+         *Code Version: Fifth Edition
+         *Availability: MTU Kerry Campus Library
+         *Modified: ---
+         *******************************************************************/
+
+        /*this three blocks of code draw the graphic clock hands in the UI
+        * the start point of all the hands is located in the same point
+        * and the endpoints of the is set differently*/
 
             //hours hand
             hours = hours % 12;
-
             angle = Math.PI / 180 * (90 - (hours + minutes / 60.0) * 30.0);
             x = (int) (246 + 100 * Math.sin(angle));
-            y = (int) (195 - 100 * Math.cos(angle));
+            y = (int) (195 + 100 * Math.cos(angle));
             g.drawLine(246, 195, x, y);
+
             //minutes hand
             angle = Math.PI / 180 * (90 - minutes * 6.0);
             x = (int) (246 + 130 * Math.sin(angle));
             y = (int) (195 + 130 * Math.cos(angle));
             g.drawLine(246, 195, x, y);
 
-            //sec
-
+            //sec hand
             g.setColor(Color.red);
             angle = Math.PI / 180 * (90 - seconds * 6.0);
             x = (int) (246 + 145 * Math.sin(angle));
             y = (int) (195 + 145 * Math.cos(angle));
             g.drawLine(246, 195, x, y);
+
 
         new Thread(){
             @Override
@@ -87,25 +107,6 @@ public class Clock  extends JPanel /*implements MouseMotionListener */{
             }
         }.start();
 
-
-
     }
 
-
-   /* @Override
-    public void mouseDragged(MouseEvent e) {
-
-        x=e.getX();
-        y=e.getY();
-        repaint();
-    }
-
-    @Override
-    public void mouseMoved(MouseEvent e) {
-
-        x=e.getX();
-        y=e.getY();
-        repaint();
-
-    }*/
 }

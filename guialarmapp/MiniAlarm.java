@@ -1,4 +1,10 @@
 package guialarmapp;
+/**This class extends the JFrame to create the GUI components
+ * It implements ActionListener to manipulate different component on to the JFrame window
+ * It creates object ot Alarm class and Clock class
+ * It calls tick method from the Alarm class within the reference of the Alarm class
+ * It use the serialisation and deserialization method to save and open the alarm objects located within an ArrayList
+ * */
 
 import javax.sound.sampled.*;
 import javax.swing.*;
@@ -70,7 +76,6 @@ public class MiniAlarm extends JFrame implements ActionListener{
         body = new JPanel();
         body.setMaximumSize(new Dimension(400,100));
         body.setLayout(new FlowLayout());
-        //body.setBorder(BorderFactory.createLineBorder(Color.BLUE));
 
 
         hoursBtn = new JButton("Hour");
@@ -171,8 +176,6 @@ public class MiniAlarm extends JFrame implements ActionListener{
 
     public void setAlarm(){
 
-
-        //timer = new Timer();
         try {
         Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.HOUR_OF_DAY,alarm.getHours());
@@ -208,13 +211,13 @@ public class MiniAlarm extends JFrame implements ActionListener{
             clip.stop();
 
     }
-    public void addAlarm(){
-
-        alarmList.add(alarm);
-
-    }
+    /**This method checks each time the alarm object is created
+     * It Avoid duplicate alarm in the arrayList
+     * It adds the object created after validate it
+     * */
     public void checkAlarmList(ArrayList<Alarm> alarmChecker){
         ArrayList<Alarm>cleaner= new ArrayList<>();
+
         for(Alarm al:alarmChecker){
             if(al.toString().equals(alarm.toString())){
                 cleaner.add(al);
@@ -233,6 +236,11 @@ public class MiniAlarm extends JFrame implements ActionListener{
                 addAlarm();
             }
         }
+    }
+    public void addAlarm(){
+
+        alarmList.add(alarm);
+
     }
 
     public void save() throws IOException {
