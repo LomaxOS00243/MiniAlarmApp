@@ -3,7 +3,8 @@ package guialarmapp;
  * It implements ActionListener to manipulate different component on to the JFrame window
  * It creates object ot Alarm class and Clock class
  * It calls tick method from the Alarm class within the reference of the Alarm class
- * It use the serialisation and deserialization method to save and open the alarm objects located within an ArrayList
+ *
+ * It uses the serialisation and deserialization method to save and open the alarm objects located within an ArrayList
  * */
 
 import javax.sound.sampled.*;
